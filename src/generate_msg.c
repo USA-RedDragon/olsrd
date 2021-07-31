@@ -88,7 +88,7 @@ generate_tc(void *p)
   struct tc_message tcpacket;
   struct interface_olsr *ifn = (struct interface_olsr *)p;
 
-  olsr_build_tc_packet(&tcpacket);
+  olsr_build_tc_packet(&tcpacket, ifn);
 
   if (queue_tc(&tcpacket, ifn) && TIMED_OUT(ifn->fwdtimer)) {
     set_buffer_timer(ifn);

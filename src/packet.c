@@ -202,9 +202,9 @@ olsr_build_hello_packet(struct hello_message *message, struct interface_olsr *ou
   OLSR_PRINTF(5, "Not on link:\n");
 #endif /* DEBUG */
 
-  /* Add the rest of the neighbors if running on multiple interfaces */
+  /* Add the rest of the neighbors if running on multiple interfaces and this interface is not isolated */
 
-  if (ifnet != NULL && ifnet->int_next != NULL)
+  if (ifnet != NULL && ifnet->int_next != NULL && !ifnet->olsr_if->cnf->is_isolated)
     OLSR_FOR_ALL_NBR_ENTRIES(neighbor) {
 
 #ifdef DEBUG
@@ -318,10 +318,11 @@ olsr_free_tc_packet(struct tc_message *message)
  *@return 0
  */
 int
-olsr_build_tc_packet(struct tc_message *message)
+olsr_build_tc_packet(struct tc_message *message, struct interface_olsr *outif)
 {
   struct tc_mpr_addr *message_mpr;
   struct neighbor_entry *entry;
+  struct link_entry *lnk;
   bool entry_added = false;
 
   message->multipoint_relay_selector_address = NULL;
@@ -337,6 +338,12 @@ olsr_build_tc_packet(struct tc_message *message)
   /* Loop trough all neighbors */
   OLSR_FOR_ALL_NBR_ENTRIES(entry) {
     if (entry->status != SYM) {
+      continue;
+    }
+
+    /* Don't include neighbors on other interfaces if this interface is isolated */
+    lnk = get_best_link_to_neighbor(&entry->neighbor_main_addr);
+    if (!lnk || (outif->olsr_if->cnf->is_isolated && outif != lnk->inter)) {
       continue;
     }
 
