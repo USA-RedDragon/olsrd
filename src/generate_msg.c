@@ -102,6 +102,11 @@ generate_mid(void *p)
 {
   struct interface_olsr *ifn = (struct interface_olsr *)p;
 
+  /* Dont send any MID messages on isolated interfaces */
+  if (ifn->olsr_if->cnf->is_isolated) {
+    return;
+  }
+
   if (queue_mid(ifn) && TIMED_OUT(ifn->fwdtimer)) {
     set_buffer_timer(ifn);
   }
