@@ -389,6 +389,9 @@ olsr_forward_message(union olsr_message *m, struct interface_olsr *in_if, union 
     /* do not forward TTL 1 messages to non-ether interfaces */
     if (is_ttl_1 && ifn->mode != IF_MODE_ETHER) continue;
 
+    /* do not forward messages to isolated interfaces */
+    if (ifn->olsr_if->cnf->is_isolated) continue;
+
     if (net_output_pending(ifn)) {
       /*
        * Check if message is to big to be piggybacked
