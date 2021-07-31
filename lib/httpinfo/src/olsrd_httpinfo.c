@@ -950,7 +950,7 @@ build_config_body(struct autobuf *abuf)
     abuf_appendf(abuf, "<tr>\n" "<td>MTU: %d</td>\n" "<td>WLAN: %s</td>\n" "<td>STATUS: UP</td>\n" "</tr>\n",
                rifs->int_mtu, rifs->is_wireless ? "Yes" : "No");
     abuf_appendf(abuf, "<tr>\n" "<td>Isolated: %s</td>\n" "<td></td>\n" "<td></td>\n" "</tr>\n",
-                rifs->olsr_if->cnf->is_isolated ? "Yes" : "No");
+                rifs->mode == IF_MODE_ISOLATED ? "Yes" : "No");
   }
   abuf_puts(abuf, "</table>\n");
 

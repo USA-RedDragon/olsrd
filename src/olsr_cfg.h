@@ -200,6 +200,7 @@ enum olsr_if_mode {
   IF_MODE_MESH,
   IF_MODE_ETHER,
   IF_MODE_SILENT,
+  IF_MODE_ISOLATED,
   IF_MODE_CNT
 };
 
@@ -228,7 +229,6 @@ struct if_config_options {
   struct olsr_ip_prefix ipv6_src;
 
   int mode;
-  int is_isolated;                     /* interface is isolated from the others and will not exchange neighbors */
 
   struct olsr_if_weight weight;
   struct olsr_msg_params hello_params;

@@ -204,7 +204,7 @@ olsr_build_hello_packet(struct hello_message *message, struct interface_olsr *ou
 
   /* Add the rest of the neighbors if running on multiple interfaces and this interface is not isolated */
 
-  if (ifnet != NULL && ifnet->int_next != NULL && !ifnet->olsr_if->cnf->is_isolated)
+  if (ifnet != NULL && ifnet->int_next != NULL && ifnet->mode != IF_MODE_ISOLATED)
     OLSR_FOR_ALL_NBR_ENTRIES(neighbor) {
 
 #ifdef DEBUG
@@ -343,7 +343,7 @@ olsr_build_tc_packet(struct tc_message *message, struct interface_olsr *outif)
 
     /* Don't include neighbors on other interfaces if this interface is isolated */
     lnk = get_best_link_to_neighbor(&entry->neighbor_main_addr);
-    if (!lnk || (outif->olsr_if->cnf->is_isolated && outif != lnk->inter)) {
+    if (!lnk || (outif->mode == IF_MODE_ISOLATED && outif != lnk->inter)) {
       continue;
     }
 

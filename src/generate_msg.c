@@ -103,7 +103,7 @@ generate_mid(void *p)
   struct interface_olsr *ifn = (struct interface_olsr *)p;
 
   /* Dont send any MID messages on isolated interfaces */
-  if (ifn->olsr_if->cnf->is_isolated) {
+  if (ifn->mode == IF_MODE_ISOLATED) {
     return;
   }
 
