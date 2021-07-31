@@ -228,6 +228,7 @@ struct if_config_options {
   struct olsr_ip_prefix ipv6_src;
 
   int mode;
+  int is_isolated;                     /* interface is isolated from the others and will not exchange neighbors */
 
   struct olsr_if_weight weight;
   struct olsr_msg_params hello_params;
