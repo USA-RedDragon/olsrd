@@ -267,7 +267,7 @@ default_lq_ffeth_timer(void __attribute__ ((unused)) * context)
     }
 
     /* ethernet booster */
-    if (link->inter->mode == IF_MODE_ETHER) {
+    if (link->inter->mode == IF_MODE_ETHER || link->inter->mode == IF_MODE_ISOLATED) {
       if (tlq->lq.valueLq > (uint8_t)(0.95 * 255)) {
         tlq->perfect_eth = true;
       }
@@ -279,7 +279,7 @@ default_lq_ffeth_timer(void __attribute__ ((unused)) * context)
         tlq->lq.valueLq = 255;
       }
     }
-    else if (link->inter->mode != IF_MODE_ETHER && tlq->lq.valueLq > 0) {
+    else if (tlq->lq.valueLq > 0) {
       tlq->lq.valueLq--;
     }
 

@@ -390,7 +390,7 @@ olsr_forward_message(union olsr_message *m, struct interface_olsr *in_if, union 
     if (is_ttl_1 && ifn->mode != IF_MODE_ETHER) continue;
 
     /* do not forward messages to isolated interfaces */
-    if (ifn->olsr_if->cnf->is_isolated) continue;
+    if (ifn->mode == IF_MODE_ISOLATED) continue;
 
     if (net_output_pending(ifn)) {
       /*

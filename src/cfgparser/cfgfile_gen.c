@@ -160,14 +160,6 @@ static void olsrd_write_if_autobuf(struct autobuf *out, struct olsrd_config *cnf
       OLSR_IF_MODE[cnfi->mode]);
   if (comments) abuf_puts(out,
     "\n"
-    "    # Isolate this interface to prevent neighbor nodes attached here from\n"
-    "    # seeing neighbors attached to other interfaces\n"
-    "\n");
-  if_appendf(out, comments, "    %sIsolated \"%s\"\n",
-      cnfi->is_isolated ? "" : "# ",
-      cnfi->is_isolated ? "yes" : "no");
-  if (comments) abuf_puts(out,
-    "\n"
     "    # IPv4 broadcast address for outgoing OLSR packets.\n"
     "    # One useful example would be 255.255.255.255\n"
     "    # The second useful value would be to\n"

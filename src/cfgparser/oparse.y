@@ -272,7 +272,6 @@ static int add_ipv6_addr(YYSTYPE ipaddr_arg, YYSTYPE prefixlen_arg)
 %token TOK_HNAINT
 %token TOK_HNAVAL
 %token TOK_AUTODETCHG
-%token TOK_IFISOLATED
 
 %token TOK_IPV4_ADDR
 %token TOK_IPV6_ADDR
@@ -421,7 +420,6 @@ ifstmts:   | ifstmts ifstmt
 ifstmt:      vcomment
              | iifweight
              | isetifmode
-             | isetifisolated
              | TOK_IP4BROADCAST isetipv4mc
              | TOK_IPV4BROADCAST isetipv4mc
              | TOK_IPV4MULTICAST isetipv4mc
@@ -584,27 +582,15 @@ isetifmode: TOK_IFMODE TOK_STRING
 {
   int ifcnt = ifs_in_curr_cfg;
   struct olsr_if *ifs = olsr_cnf->interfaces;
-	int mode = (strcmp($2->string, "ether") == 0)?IF_MODE_ETHER:((strcmp($2->string, "silent") == 0)?IF_MODE_SILENT:IF_MODE_MESH);
+	int mode = (
+    (strcmp($2->string, "ether") == 0)?IF_MODE_ETHER:
+    (strcmp($2->string, "isolated") == 0)?IF_MODE_ISOLATED:
+    (strcmp($2->string, "silent") == 0)?IF_MODE_SILENT:IF_MODE_MESH);
 
   PARSER_DEBUG_PRINTF("\tMode: %s\n", $2->string);
 
 	SET_IFS_CONF(ifs, ifcnt, mode, mode);
 	
-  free($2->string);
-  free($2);
-}
-;
-
-isetifisolated: TOK_IFISOLATED TOK_STRING
-{
-  int ifcnt = ifs_in_curr_cfg;
-  struct olsr_if *ifs = olsr_cnf->interfaces;
-	int isisolated = (strcmp($2->string, "no") == 0)?0:1;
-
-  PARSER_DEBUG_PRINTF("\tIsolated: %s\n", $2->string);
-
-	SET_IFS_CONF(ifs, ifcnt, is_isolated, isisolated);
-
   free($2->string);
   free($2);
 }

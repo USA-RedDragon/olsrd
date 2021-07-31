@@ -99,7 +99,8 @@ const char *GW_UPLINK_TXT[] = {
 const char *OLSR_IF_MODE[] = {
   "mesh",
   "ether",
-  "silent"
+  "silent",
+  "isolated"
 };
 
 int current_line;
@@ -308,6 +309,8 @@ olsrd_print_interface_cnf(struct if_config_options *cnf, struct if_config_option
     printf("\tMode           : ether%s\n",DEFAULT_STR(mode));
   } else if (cnf->mode==IF_MODE_SILENT){
     printf("\tMode           : silent%s\n",DEFAULT_STR(mode));
+  } else if (cnf->mode==IF_MODE_ISOLATED){
+    printf("\tMode           : isolated%s\n",DEFAULT_STR(mode));
   } else {
     printf("\tMode           : mesh%s\n",DEFAULT_STR(mode));
   }
