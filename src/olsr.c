@@ -106,7 +106,7 @@ void olsr_do_startup_sleep(void)
            sum_startup_sleep,max_startup_sleep);
   sleep(max_startup_sleep);
 #else /* OLSR_COLLECT_STARTUP_SLEEP */
-  if (sum_startup_sleep > 0) 
+  if (sum_startup_sleep > 0)
     printf("olsrd startup was delayed %i seconds due to various nasty error messages.\nYOU SHOULD REALLY FIX ABOVE PROBLEMS!\n",
            sum_startup_sleep);
 #endif /* OLSR_COLLECT_STARTUP_SLEEP */
@@ -388,6 +388,9 @@ olsr_forward_message(union olsr_message *m, struct interface_olsr *in_if, union 
 
     /* do not forward TTL 1 messages to non-ether interfaces */
     if (is_ttl_1 && ifn->mode != IF_MODE_ETHER) continue;
+
+    /* do not forward messages to isolated interfaces */
+    if (ifn->olsr_if->cnf->is_isolated) continue;
 
     if (net_output_pending(ifn)) {
       /*
