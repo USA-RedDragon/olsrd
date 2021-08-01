@@ -202,9 +202,15 @@ olsr_build_hello_packet(struct hello_message *message, struct interface_olsr *ou
   OLSR_PRINTF(5, "Not on link:\n");
 #endif /* DEBUG */
 
-  /* Add the rest of the neighbors if running on multiple interfaces and this interface is not isolated */
+  /* If interface is isolated we don't include any other interface neighbors */
 
-  if (ifnet != NULL && ifnet->int_next != NULL && ifnet->mode != IF_MODE_ISOLATED)
+  if (outif->mode == IF_MODE_ISOLATED) {
+    return 0;
+  }
+
+  /* Add the rest of the neighbors if running on multiple interfaces */
+
+  if (ifnet != NULL && ifnet->int_next != NULL)
     OLSR_FOR_ALL_NBR_ENTRIES(neighbor) {
 
 #ifdef DEBUG
