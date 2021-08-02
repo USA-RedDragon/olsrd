@@ -111,6 +111,11 @@ create_lq_hello(struct lq_hello_message *lq_hello, struct interface_olsr *outif)
     bool neigh_is_new = false;
     uint8_t link_type;
 
+    /* Exclude neighbors from other interfaces is this is isolated */
+    if (outif->mode == IF_MODE_ISOLATED && !ipequal(&walker->local_iface_addr, &outif->ip_addr)) {
+      continue;
+    }
+
     // allocate a neighbour entry
     neigh = neigh_find(lq_hello, walker);
     if (!neigh) {
@@ -254,6 +259,11 @@ create_lq_tc(struct lq_tc_message *lq_tc, struct interface_olsr *outif)
     lnk = get_best_link_to_neighbor(&walker->neighbor_main_addr);
     if (!lnk) {
       continue;                 // no link ?
+    }
+
+    /* Don't include if this is an isolated interface */
+    if (outif->mode == IF_MODE_ISOLATED && outif != lnk->inter) {
+      continue;
     }
 
     if (lnk->linkcost >= LINK_COST_BROKEN) {
