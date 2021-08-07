@@ -766,6 +766,11 @@ olsr_parser(union olsr_message *m, struct interface_olsr *in_if __attribute__ ((
 
   update_name_entry(&originator, namemessage, size, vtime);
 
+  /* Never forward these messages from an isolated interface */
+  if (in_if->mode == IF_MODE_ISOLATED) {
+    return false;
+  }
+
   /* Forward the message */
   return true;
 }
