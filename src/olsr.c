@@ -350,7 +350,7 @@ olsr_forward_message(union olsr_message *m, struct interface_olsr *in_if, union 
     return 0;
 
   /* Check MPR */
-  if (olsr_lookup_mprs_set(src) == NULL) {
+  if (in_if->mode != IF_MODE_ISOLATED && olsr_lookup_mprs_set(src) == NULL) {
 #ifdef DEBUG
     struct ipaddr_str buf;
     OLSR_PRINTF(5, "Forward - sender %s not MPR selector\n", olsr_ip_to_string(&buf, src));
