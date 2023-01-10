@@ -77,6 +77,7 @@
 #define EMISSION_JITTER         25      /* percent */
 #define NAME_VALID_TIME		1800    /* seconds */
 #define NAMESERVER_COUNT        3
+#define ENTRY_VALID_TIME  (NAME_VALID_TIME * 1000) /* milliseconds */
 
 #define NAME_PROTOCOL_VERSION	1
 
@@ -100,6 +101,7 @@ struct name_entry {
   uint16_t type;
   uint16_t len;
   char *name;
+  uint32_t expires;
   struct name_entry *next;             /* linked list */
 };
 
@@ -194,6 +196,8 @@ void name_constructor(void);
 void name_destructor(void);
 
 int name_init(void);
+
+void free_old_list_entries(struct list_node *list);
 
 #endif /* _NAMESERVICE_PLUGIN */
 
