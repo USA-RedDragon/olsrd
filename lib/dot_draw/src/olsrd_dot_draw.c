@@ -300,7 +300,7 @@ dotdraw_write_data(void *foo __attribute__ ((unused))) {
   }
 
   if (FD_ISSET(outbuffer_socket, &set)) {
-    result = send(outbuffer_socket, outbuffer.buf, outbuffer.len, 0);
+    result = send(outbuffer_socket, outbuffer.buf, outbuffer.len, MSG_DONTWAIT);
     if (result > 0)
       abuf_pull(&outbuffer, result);
 
