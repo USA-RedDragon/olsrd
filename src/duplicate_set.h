@@ -54,13 +54,14 @@
 #define DUPLICATE_CLEANUP_INTERVAL 15000
 #define DUPLICATE_CLEANUP_JITTER 25
 #define DUPLICATE_VTIME 120000
-#define DUP_MAX_TOO_LOW 16
+#define DUP_MAX_OUT_OF_BOUNDS 16
+#define DUP_SEQNR_DIFF_HIGH_LIMIT 0x2000
 
 struct dup_entry {
   struct avl_node avl;
   union olsr_ip_addr ip;
   uint16_t seqnr;
-  uint16_t too_low_counter;
+  uint16_t out_of_bounds_counter;
   uint32_t array;
   uint32_t valid_until;
 };
