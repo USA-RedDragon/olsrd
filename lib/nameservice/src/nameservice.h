@@ -139,7 +139,7 @@ bool olsr_parser(union olsr_message *, struct interface_olsr *, union olsr_ip_ad
 /* callback for periodic timer */
 void olsr_namesvc_gen(void *);
 
-int encap_namemsg(struct namemsg *);
+int encap_namemsg(struct namemsg *, int maxsize, int* cursor);
 
 struct name_entry *add_name_to_list(struct name_entry *my_list, const char *value, int type, const union olsr_ip_addr *ip);
 
