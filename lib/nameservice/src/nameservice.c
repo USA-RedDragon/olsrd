@@ -141,6 +141,16 @@ static regex_t regex_t_service;
 static int pmatch_service = 10;
 static regmatch_t regmatch_t_service[10];
 
+/* safe string compare, but can only be equal if strings are equal length */
+static inline int strnequal(const char* safe_a, const char* unsafe_b, unsigned int blen) {
+  if (strncmp(safe_a, unsafe_b, blen) == 0 && strlen(safe_a) == blen) {
+    return 0;
+  }
+  else {
+    return 1;
+  }
+}
+
 /**
  * do initialization
  */
@@ -927,7 +937,7 @@ decap_namemsg(struct name *from_packet, struct name_entry **to, bool * this_tabl
   for (already_saved_name_entries = (*to); already_saved_name_entries != NULL;
        already_saved_name_entries = already_saved_name_entries->next) {
     if (type_of_from_packet == NAME_HOST
-        && strncmp(already_saved_name_entries->name, name, len_of_name) == 0) {
+        && strnequal(already_saved_name_entries->name, name, len_of_name) == 0) {
       already_saved_name_entries->expires = olsr_getTimestamp(ENTRY_VALID_TIME);
       if (ipequal(&already_saved_name_entries->ip, &from_packet->ip)) {
         OLSR_PRINTF(4, "NAME PLUGIN: received name entry %s (%s) already in hash table\n", name,
@@ -945,7 +955,7 @@ decap_namemsg(struct name *from_packet, struct name_entry **to, bool * this_tabl
       return;
 
     } else if (type_of_from_packet == NAME_SERVICE
-        && strncmp(already_saved_name_entries->name, name, len_of_name) == 0) {
+        && strnequal(already_saved_name_entries->name, name, len_of_name) == 0) {
       already_saved_name_entries->expires = olsr_getTimestamp(ENTRY_VALID_TIME);
       OLSR_PRINTF(4, "NAME PLUGIN: received name or service entry %s (%s) already in hash table\n", name,
                   olsr_ip_to_string(&strbuf, &already_saved_name_entries->ip));
@@ -958,7 +968,7 @@ decap_namemsg(struct name *from_packet, struct name_entry **to, bool * this_tabl
       return;
     } else if (type_of_from_packet == NAME_LATLON) {
       already_saved_name_entries->expires = olsr_getTimestamp(ENTRY_VALID_TIME);
-      if (0 != strncmp(already_saved_name_entries->name, name, len_of_name)) {
+      if (0 != strnequal(already_saved_name_entries->name, name, len_of_name)) {
         OLSR_PRINTF(4, "NAME PLUGIN: updating name %s -> %s (%s)\n", already_saved_name_entries->name, name,
                     olsr_ip_to_string(&strbuf, &already_saved_name_entries->ip));
         free(already_saved_name_entries->name);
