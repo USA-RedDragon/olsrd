@@ -464,6 +464,14 @@ int olsr_new_netlink_route(unsigned char family, uint32_t rttable, unsigned int 
     if (!set && errno == 11 && if_ifwithindex(if_index) == NULL) {
       err = 0;
     }
+    /* Failed to delete a route - ignore the error so the route will be successfully remove from internal state */
+    if (!set && (errno == 11 || errno == 122)) {
+      err = 0;
+    }
+    /* Failed to add a route - ignore the error to avoid this happening continually */
+    else if (set && (errno == 11 || errno == 122)) {
+      err = 0;
+    }
   }
 
   return err;
