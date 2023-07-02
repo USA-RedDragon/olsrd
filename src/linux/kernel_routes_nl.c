@@ -460,6 +460,10 @@ int olsr_new_netlink_route(unsigned char family, uint32_t rttable, unsigned int 
           olsr_ip_prefix_to_string(dst), olsr_ip_to_string(&buf, &dst->prefix), if_ifwithindex_name(if_index),
           strerror(errno), errno);
     }
+    /* Failed to delete a route on a non-existant device - ignore the error so the route will be successfully remove from internal state */
+    if (!set && errno == 11 && if_ifwithindex(if_index) == NULL) {
+      err = 0;
+    }
   }
 
   return err;
