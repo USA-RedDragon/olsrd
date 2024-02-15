@@ -388,7 +388,9 @@ net_output(struct interface_olsr *ifp)
         0) {
       perror("sendto(v4)");
 #ifndef _WIN32
-      olsr_syslog(OLSR_LOG_ERR, "OLSR: sendto IPv4 '%s' on interface %s", strerror(errno), ifp->int_name);
+      if (strncmp(ifp->int_name, "wg", 2) != 0) {
+        olsr_syslog(OLSR_LOG_ERR, "OLSR: sendto IPv4 '%s' on interface %s", strerror(errno), ifp->int_name);
+      }
 #endif /* _WIN32 */
       retval = -1;
     }
