@@ -364,7 +364,7 @@ static void name_lazy_init(void) {
   int ret;
 
   //regex string for validating the hostnames
-  const char *regex_name = "^[[:alnum:]_.-]+$";
+  const char *regex_name = "^[[:alnum:]_*.-]+$";
   //regex string for the service line
   size_t regex_size;
   char *regex_service;
@@ -402,7 +402,7 @@ static void name_lazy_init(void) {
   strscpy(regex_service, "^[[:alnum:]]+://(([[:alnum:]_.-]+", regex_size);
   strscat(regex_service, my_suffix, regex_size);
   strscat(regex_service,
-          ")|([[:digit:]]{1,3}\\.[[:digit:]]{1,3}\\.[[:digit:]]{1,3}\\.[[:digit:]]{1,3})):[[:digit:]]+[[:alnum:]/?._=#-]*\\|(tcp|udp)\\|[^|[:cntrl:]]+$",
+          ")|([[:digit:]]{1,3}\\.[[:digit:]]{1,3}\\.[[:digit:]]{1,3}\\.[[:digit:]]{1,3})):[[:digit:]]+[[:alnum:]/?&._=#-]*\\|(tcp|udp)\\|[^|[:cntrl:]]+$",
           regex_size);
 
   /* #1: call regcomp() to compile the regex */
