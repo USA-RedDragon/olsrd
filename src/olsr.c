@@ -350,7 +350,7 @@ olsr_forward_message(union olsr_message *m, struct interface_olsr *in_if, union 
     return 0;
 
   /* Check MPR */
-  if (olsr_lookup_mprs_set(src) == NULL) {
+  if (in_if->mode != IF_MODE_ISOLATED && olsr_lookup_mprs_set(src) == NULL) {
 #ifdef DEBUG
     struct ipaddr_str buf;
     OLSR_PRINTF(5, "Forward - sender %s not MPR selector\n", olsr_ip_to_string(&buf, src));
@@ -385,6 +385,9 @@ olsr_forward_message(union olsr_message *m, struct interface_olsr *in_if, union 
 
     /* do not forward TTL 1 messages to non-ether interfaces */
     if (is_ttl_1 && ifn->mode != IF_MODE_ETHER) continue;
+
+    /* do not forward messages to isolated interfaces */
+    if (ifn->mode == IF_MODE_ISOLATED) continue;
 
     if (net_output_pending(ifn)) {
       /*

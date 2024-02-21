@@ -88,7 +88,7 @@ generate_tc(void *p)
   struct tc_message tcpacket;
   struct interface_olsr *ifn = (struct interface_olsr *)p;
 
-  olsr_build_tc_packet(&tcpacket);
+  olsr_build_tc_packet(&tcpacket, ifn);
 
   if (queue_tc(&tcpacket, ifn) && TIMED_OUT(ifn->fwdtimer)) {
     set_buffer_timer(ifn);
@@ -101,6 +101,11 @@ void
 generate_mid(void *p)
 {
   struct interface_olsr *ifn = (struct interface_olsr *)p;
+
+  /* Dont send any MID messages on isolated interfaces */
+  if (ifn->mode == IF_MODE_ISOLATED) {
+    return;
+  }
 
   if (queue_mid(ifn) && TIMED_OUT(ifn->fwdtimer)) {
     set_buffer_timer(ifn);

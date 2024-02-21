@@ -125,7 +125,7 @@ int olsr_build_hello_packet(struct hello_message *, struct interface_olsr *);
 
 void olsr_free_tc_packet(struct tc_message *);
 
-int olsr_build_tc_packet(struct tc_message *);
+int olsr_build_tc_packet(struct tc_message *, struct interface_olsr *outif);
 
 void olsr_free_mid_packet(struct mid_message *);
 
