@@ -515,13 +515,18 @@ check_timestamp(struct interface_olsr *olsr_if, const union olsr_ip_addr *origin
   }
 
   /* ok - update diff */
-  entry->diff = ((now.tv_sec - tstamp) + entry->diff) ? ((now.tv_sec - tstamp) + entry->diff) / 2 : 0;
+  entry->diff = now.tv_sec - tstamp;
 
   olsr_printf(3, "[ENC]Diff set to : %d\n", entry->diff);
 
   /* update validtime */
 
   entry->valtime = GET_TIMESTAMP(TIMESTAMP_HOLD_TIME * 1000);
+
+  /* KG6JEI: drag conftime forward if expired to avoid rollover */
+  if (TIMED_OUT(entry->conftime)) {
+    entry->conftime = GET_TIMESTAMP(0);
+  }
 
   return 1;
 }
@@ -597,7 +602,9 @@ send_challenge(struct interface_olsr *olsr_if, const union olsr_ip_addr *new_hos
 
   /* update validtime - not validated */
   entry->conftime = GET_TIMESTAMP(EXCHANGE_HOLD_TIME * 1000);
-
+  /* AE6XE and KG6JEI uninitialized variable under some conditions */
+  entry->valtime  = GET_TIMESTAMP(0);
+  
   hash = olsr_ip_hashing(new_host);
 
   /* Queue */
@@ -874,6 +881,8 @@ parse_challenge(struct interface_olsr *olsr_if, char *in_msg)
 
   /* update validtime - not validated */
   entry->conftime = GET_TIMESTAMP(EXCHANGE_HOLD_TIME * 1000);
+  /* AE6XE and KG6JEI uninitialized variable under some conditions */
+  entry->valtime  = GET_TIMESTAMP(0);
 
   /* Build and send response */
 

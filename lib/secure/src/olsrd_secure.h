@@ -71,8 +71,11 @@
 
 #define KEYLENGTH      16
 
-#define UPPER_DIFF 3
-#define LOWER_DIFF -3
+/* AE6XE and KG6JEI - prior logic averaged the delta between 2 samples had overflow */
+/* to correct, delta between 2 samples now actual, updated bounds accordingly */
+
+#define UPPER_DIFF 6
+#define LOWER_DIFF -6
 
 extern char aes_key[16];
 
