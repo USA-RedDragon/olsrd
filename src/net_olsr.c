@@ -384,7 +384,14 @@ net_output(struct interface_olsr *ifp)
 
   if (olsr_cnf->ip_version == AF_INET) {
     /* IP version 4 */
-    if (olsr_sendto(ifp->send_socket, ifp->netbuf.buff, ifp->netbuf.pending, MSG_DONTROUTE, (struct sockaddr *)sin, sizeof(*sin)) <
+    if (ifp->stations[0] != 0) {
+      /* If we might have multiple stations (in wifi) we transform this broadcast into a group of unicasts */
+      if (olsr_sendto_broadcast_to_unicast(ifp->olsr_raw_socket, ifp->netbuf.buff, ifp->netbuf.pending, ifp) < 0) {
+        perror("olsr_sendto_broadcast_to_unicast(v4)");
+        retval = -1;
+      }
+    }
+    else if (olsr_sendto(ifp->send_socket, ifp->netbuf.buff, ifp->netbuf.pending, MSG_DONTROUTE, (struct sockaddr *)sin, sizeof(*sin)) <
         0) {
       perror("sendto(v4)");
 #ifndef _WIN32

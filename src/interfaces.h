@@ -135,6 +135,7 @@ struct interface_olsr {
   int is_hcif;                         /* Is this a emulated host-client if? */
 
   int olsr_socket;                     /* The broadcast socket for this interface */
+  int olsr_raw_socket;                 /* The raw socket for the interface */
   int send_socket;                     /* The send socket for this interface */
 
   int int_metric;                      /* metric of interface */
@@ -144,6 +145,8 @@ struct interface_olsr {
   int is_wireless;                     /* wireless interface or not */
   char *int_name;                      /* from kernel if structure */
   uint16_t olsr_seqnum;                /* Olsr message seqno */
+  uint8_t mac[6];                      /* Mac address of interface */
+  char stations[60];                   /* Path to peer file > strlen("/sys/kernel/debug/ieee80211/phy0/netdev:wlan0/stations") */
 
   /* Periodic message generation timers */
   struct timer_entry *hello_gen_timer;

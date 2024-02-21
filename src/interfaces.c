@@ -426,6 +426,8 @@ olsr_remove_interface(struct olsr_if * iface)
   remove_olsr_socket(ifp->send_socket, &olsr_input, NULL);
   close(ifp->send_socket);
 
+  close(ifp->olsr_raw_socket);
+
   /* Free memory */
   free(ifp->int_name);
   free(ifp);

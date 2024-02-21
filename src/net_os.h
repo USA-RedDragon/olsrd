@@ -59,6 +59,8 @@
 /* OS dependent functions */
 ssize_t olsr_sendto(int, const void *, size_t, int, const struct sockaddr *, socklen_t);
 
+ssize_t olsr_sendto_broadcast_to_unicast(int, const void *, size_t, struct interface_olsr *);
+
 ssize_t olsr_recvfrom(int, void *, size_t, int, struct sockaddr *, socklen_t *);
 
 int olsr_select(int, fd_set *, fd_set *, fd_set *, struct timeval *);
@@ -74,6 +76,8 @@ int net_os_restore_ifoptions(void);
 int gethemusocket(struct sockaddr_in *pin);
 
 int getsocket(int, struct interface_olsr *);
+
+int getrawsocket(struct interface_olsr *);
 
 int getsocket6(int, struct interface_olsr *);
 

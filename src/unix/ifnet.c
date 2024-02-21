@@ -66,6 +66,7 @@
 #include <assert.h>
 #include <signal.h>
 #include <sys/types.h>
+#include <sys/stat.h>
 #include <net/if.h>
 #include <net/if_arp.h>
 #include <netinet/in_systm.h>
@@ -89,6 +90,8 @@
 #define BUFSPACE  (127*1024)    /* max. input buffer size to request */
 
 static const uint8_t  zero_v6[16] = {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0};
+
+static const char PATH_STATIONS_PATTERN[] = "/sys/kernel/debug/ieee80211/phy%d/netdev:wlan%d/stations";
 
 void
 check_interface_updates(void *foo __attribute__ ((unused)))
@@ -221,6 +224,24 @@ chk_if_changed(struct olsr_if *iface)
 
   /* Get interface index */
   ifp->if_index = if_nametoindex(ifr.ifr_name);
+
+  /* Get mac address */
+  if (ioctl(olsr_cnf->ioctl_s, SIOCGIFHWADDR, &ifr) < 0) {
+    OLSR_PRINTF(3, "No such interface: %s\n", iface->name);
+    goto remove_interface;
+  }
+  memcpy(ifp->mac, ifr.ifr_hwaddr.sa_data, sizeof(ifp->mac));
+
+  /* Find path to stations */
+  ifp->stations[0] = 0;
+  if (strcmp(ifr.ifr_name, "wlan0") == 0 || strcmp(ifr.ifr_name, "wlan1") == 0) {
+    struct stat stat_buf;
+    int phyid = ifr.ifr_name[4] - '0';
+    sprintf(ifp->stations, PATH_STATIONS_PATTERN, phyid, phyid);
+    if (stat(ifp->stations, &stat_buf) != 0) {
+      ifp->stations[0] = 0;
+    }
+  }
 
   /*
    * Now check if the IP has changed
@@ -701,6 +722,7 @@ chk_if_up(struct olsr_if *iface, int debuglvl __attribute__ ((unused)))
      */
 
     ifs.olsr_socket = getsocket(BUFSPACE, &ifs);
+    ifs.olsr_raw_socket = getrawsocket(&ifs);
     ifs.send_socket = getsocket(0, &ifs);
 
     if (ifs.olsr_socket < 0) {
@@ -711,9 +733,18 @@ chk_if_up(struct olsr_if *iface, int debuglvl __attribute__ ((unused)))
       kill(getpid(), SIGINT);
       return 0;
     }
+    if (ifs.olsr_raw_socket < 0) {
+      fprintf(stderr, "Could not initialize raw socket... exiting!\n\n");
+      olsr_syslog(OLSR_LOG_ERR, "Could not initialize socket... exiting!\n\n");
+      olsr_cnf->exit_value = EXIT_FAILURE;
+      free(ifs.int_name);
+      kill(getpid(), SIGINT);
+      return 0;
+    }
     if (ifs.send_socket < 0) {
       OLSR_PRINTF(1, "Warning, transmission socket could not be initialized. Abort if-up.\n");
       close (ifs.olsr_socket);
+      close (ifs.olsr_raw_socket);
       free(ifs.int_name);
       return 0;
     }
