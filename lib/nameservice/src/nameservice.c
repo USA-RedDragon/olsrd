@@ -1257,10 +1257,10 @@ write_services_file(bool writemacs)
 
       for (name = entry->names; name != NULL; name = name->next) {
         struct ipaddr_str strbuf;
-        OLSR_PRINTF(6, "%s\t", name->name);
+        OLSR_PRINTF(6, "%s", name->name);
         OLSR_PRINTF(6, "\t#%s\n", olsr_ip_to_string(&strbuf, &entry->originator));
 
-        fprintf(file, "%s\t", name->name);
+        fprintf(file, "%s", name->name);
         fprintf(file, "\t#%s\n", olsr_ip_to_string(&strbuf, &entry->originator));
       }
     }
