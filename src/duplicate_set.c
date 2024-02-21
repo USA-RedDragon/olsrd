@@ -70,7 +70,7 @@ void olsr_cleanup_duplicates(union olsr_ip_addr *orig) {
 
   entry = (struct dup_entry *)avl_find(&duplicate_set, orig);
   if (entry != NULL) {
-    entry->too_low_counter = DUP_MAX_TOO_LOW - 2;
+    entry->out_of_bounds_counter = DUP_MAX_OUT_OF_BOUNDS - 2;
   }
 }
 
@@ -82,7 +82,7 @@ olsr_create_duplicate_entry(void *ip, uint16_t seqnr)
   if (entry != NULL) {
     memcpy(&entry->ip, ip, olsr_cnf->ip_version == AF_INET ? sizeof(entry->ip.v4) : sizeof(entry->ip.v6));
     entry->seqnr = seqnr;
-    entry->too_low_counter = 0;
+    entry->out_of_bounds_counter = 0;
     entry->avl.key = &entry->ip;
     entry->array = 0;
   }
@@ -160,12 +160,12 @@ olsr_message_is_duplicate(union olsr_message *m)
   }
 
   diff = olsr_seqno_diff(seqnr, entry->seqnr);
-  if (diff < -31) {
-    entry->too_low_counter++;
+  if (diff < -31 || diff > DUP_SEQNR_DIFF_HIGH_LIMIT) {
+    entry->out_of_bounds_counter++;
 
-    // client did restart with a lower number ?
-    if (entry->too_low_counter > DUP_MAX_TOO_LOW) {
-      entry->too_low_counter = 0;
+    // client did restart with a too low or too high number ?
+    if (entry->out_of_bounds_counter > DUP_MAX_OUT_OF_BOUNDS) {
+      entry->out_of_bounds_counter = 0;
       entry->seqnr = seqnr;
       entry->array = 1;
       return false;             /* start with a new sequence number, so NO duplicate */
@@ -174,7 +174,7 @@ olsr_message_is_duplicate(union olsr_message *m)
     return true;                /* duplicate ! */
   }
 
-  entry->too_low_counter = 0;
+  entry->out_of_bounds_counter = 0;
   if (diff <= 0) {
     uint32_t bitmask = 1u << ((uint32_t) (-diff));
 
