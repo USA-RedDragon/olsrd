@@ -90,7 +90,6 @@ install: all
 	$(MAKECMDPREFIX)mkdir -v -p "$(LIBDIR)"
 	$(MAKECMDPREFIX)cp -v "lib/$(LIBNAME)" "$(LIBDIR)/$(LIBNAME).$(VERSION)"
 	$(MAKECMDPREFIX)$(STRIP) "$(LIBDIR)/$(LIBNAME).$(VERSION)"
-	$(MAKECMDPREFIX)/sbin/ldconfig -n "$(LIBDIR)"
 
 install-headers: all
 	$(MAKECMDPREFIX)mkdir -v -p "$(INCLUDEDIR)"
@@ -99,7 +98,6 @@ install-headers: all
 
 uninstall:
 	$(MAKECMDPREFIX)rm -fv "$(LIBDIR)/$(LIBNAME)" "$(LIBDIR)/$(LIBNAME).$(VERSION)"
-	$(MAKECMDPREFIX)/sbin/ldconfig -n "$(LIBDIR)"
 	$(MAKECMDPREFIX)rmdir -v -p --ignore-fail-on-non-empty "$(LIBDIR)"
 
 uninstall-headers:

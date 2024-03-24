@@ -31,7 +31,7 @@ INSTALLING
   To install:
   # make install
 
-  This will run ldconfig to update the dynamic linker.
+  Afterwards, run `ldconfig` to update the dynamic linker.
   It might take a while.
 
 USAGE
