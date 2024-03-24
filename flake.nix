@@ -22,7 +22,7 @@
             enableParallelBuilding = true;
 
             buildPhase = "make";
-            installPhase = ''make install arprefresh_install txtinfo_install jsoninfo_install dot_draw_install watchdog_install nameservice_install PREFIX="$out" DESTDIR="$out"'';
+            installPhase = "PREFIX=$out DESTDIR=$out make install arprefresh_install txtinfo_install jsoninfo_install dot_draw_install watchdog_install nameservice_install";
 
             meta = {
               description = "The olsr.org Optimized Link-State Routing daemon (olsrd)";
