@@ -18,6 +18,9 @@
               bison flex gnumake
             ];
             src = self;
+
+            enableParallelBuilding = true;
+
             buildPhase = "make";
             installPhase = ''make install arprefresh_install txtinfo_install jsoninfo_install dot_draw_install watchdog_install nameservice_install PREFIX="$out" DESTDIR="$out"'';
 
