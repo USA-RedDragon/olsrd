@@ -14,6 +14,7 @@
         packages = rec {
           default = pkgs.stdenv.mkDerivation rec {
             name = "olsrd";
+            version = "0.9.6.2";
             nativeBuildInputs = with pkgs; [
               bison flex gnumake
             ];
@@ -33,6 +34,7 @@
 
                 OLSR operates as a table driven, proactive protocol, i.e., it exchanges topology information with other nodes of the network regularly. It is developed to work independently from other protocols. Likewise, OLSR makes no assumptions about the underlying link-layer. 
               '';
+              inherit version;
             };
           };
 
