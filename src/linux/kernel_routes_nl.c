@@ -161,7 +161,7 @@ static void rtnetlink_read(int sock, void *data __attribute__ ((unused)), unsign
     sizeof(nladdr),
     &iov,
     1,
-    NULL,
+    0,
     0,
     0
   };
