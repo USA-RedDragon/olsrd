@@ -1,7 +1,7 @@
 {
   description = "The olsr.org Optimized Link-State Routing daemon (olsrd)";
 
-  inputs.nixpkgs.url = "github:nixos/nixpkgs/nixos-24.11";
+  inputs.nixpkgs.url = "github:nixos/nixpkgs/nixos-25.11";
   inputs.flake-utils.url = github:numtide/flake-utils;
 
   outputs = { self, nixpkgs, flake-utils }:
