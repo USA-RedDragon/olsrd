@@ -16,7 +16,7 @@ assert(hasProperty('sourceSets'))
 apply plugin: 'jacoco'
 
 
-if (!hasProperty('jacocoToolVersion')) ext.jacocoToolVersion = '0.8.14'
+if (!hasProperty('jacocoToolVersion')) ext.jacocoToolVersion = '0.8.15'
 if (!hasProperty('jacocoXmlReport'  )) ext.jacocoXmlReport   = true
 if (!hasProperty('jacocoCsvReport'  )) ext.jacocoCsvReport   = false
 
